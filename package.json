@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "expo": "~51.0.28",
+    "expo-media-library": "~16.0.5",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-vision-camera": "^4.5.3",
-    "expo-media-library": "~16.0.5",
-    "undefined": "react-native-vision-camera/code-scanning"
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

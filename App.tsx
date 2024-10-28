@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StatusBar,
   TouchableWithoutFeedback,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useState, useEffect, useRef } from "react";
@@ -16,6 +17,7 @@ import {
   useCodeScanner,
 } from "react-native-vision-camera";
 import * as MediaLibrary from "expo-media-library";
+import { io, Socket } from "socket.io-client";
 
 export default function HomeScreen() {
   const device = useCameraDevice("back");
@@ -27,6 +29,8 @@ export default function HomeScreen() {
   const [isScaning, setIsScaning] = useState(false);
 
   const cameraRef = useRef<Camera>(null);
+
+  const socket = useRef<Socket | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -44,6 +48,11 @@ export default function HomeScreen() {
         return;
       }
     })();
+
+    socket.current = io("http://192.168.1.3:3000");
+    socket.current.on("connect", () => {
+      console.log("Conectado ao servidor socket");
+    });
   }, []);
 
   // Função que escaneia códigos de barras
@@ -53,6 +62,12 @@ export default function HomeScreen() {
       if (isScaning) {
         codes.forEach((code) => {
           console.log(`Código escaneado: ${code.value}, Tipo: ${code.type}`);
+
+          // Enviar pro socket
+          if (socket.current) {
+            socket.current.emit("barcode", code.value);
+            Alert.alert("Código escaneado");
+          }
         });
       }
       setIsScaning(false);
